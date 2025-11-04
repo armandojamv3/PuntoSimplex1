@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 @Entity
 @Data
 @Table(name = "usuario")
-
+// almacena y define la estrutura de los datos
 public class Usuario {
 
     @Id
