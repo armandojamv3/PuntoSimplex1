@@ -11,6 +11,12 @@
     import org.springframework.context.annotation.Configuration;
     import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+    // IMPORTACIONES NUEVAS REQUERIDAS
+    import com.restaurante.PuntoSimplex.Model.Categoria;
+    import com.restaurante.PuntoSimplex.repository.CategoriaRepository;
+    import java.util.Arrays;
+    import java.util.List;
+
     @Configuration
     public class DataInitializer {
 
@@ -53,6 +59,35 @@
                     admin.setRol(adminRole); // Asignar el rol de ADMINISTRADOR al usuario
                     usuarioRepository.save(admin); // Guardar el usuario en la base de datos
                     System.out.println("✅ Usuario Admin creado exitosamente");
+                }
+            };
+        }
+
+        // 🆕 NUEVO MÉTODO PARA INICIALIZAR CATEGORÍAS
+        @Bean
+        CommandLineRunner initCategorias(CategoriaRepository categoriaRepository) {
+            return args -> {
+                if (categoriaRepository.count() == 0) {
+                    System.out.println("--- Inicializando categorías esenciales ---");
+
+                    // Creamos las categorías
+                    Categoria bebida = new Categoria();
+                    bebida.setDescripcion("Bebidas");
+
+                    Categoria platoFuerte = new Categoria();
+                    platoFuerte.setDescripcion("Platos Fuertes");
+
+                    Categoria postre = new Categoria();
+                    postre.setDescripcion("Postres");
+
+                    List<Categoria> categoriasIniciales = Arrays.asList(bebida, platoFuerte, postre);
+
+                    // Spring les asignará automáticamente IDs (1, 2, 3...)
+                    categoriaRepository.saveAll(categoriasIniciales);
+
+                    System.out.println("✅ 3 categorías inicializadas con éxito.");
+                } else {
+                    System.out.println("ℹ️ Las categorías ya existen.");
                 }
             };
         }

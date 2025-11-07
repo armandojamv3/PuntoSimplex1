@@ -23,20 +23,14 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
      * La búsqueda por nombre es insensible a mayúsculas/minúsculas y busca en primer y segundo nombre/apellido.
      */
     @Query("SELECT u FROM Usuario u WHERE " +
-            // Filtro por Nombre: busca en primer/segundo nombre/apellido. Si :nombre es NULL, siempre es TRUE.
-            "(:nombre IS NULL OR " +
-            "LOWER(u.primerNombre) LIKE LOWER(CONCAT('%', :nombre, '%')) OR " +
-            "LOWER(u.segundoNombre) LIKE LOWER(CONCAT('%', :nombre, '%')) OR " +
-            "LOWER(u.primerApellido) LIKE LOWER(CONCAT('%', :nombre, '%')) OR " +
-            "LOWER(u.segundoApellido) LIKE LOWER(CONCAT('%', :nombre, '%'))) AND " +
-            // Filtro por Rol ID: Si :rolId es NULL, siempre es TRUE.
+            // ** IMPORTANTE: ELIMINAR TODA LA LÓGICA DEL NOMBRE/LIKE DE AQUÍ **
             "(:rolId IS NULL OR u.rol.id = :rolId) AND " +
-            // Filtro por Estado Activo: Si :activo es NULL, siempre es TRUE.
             "(:activo IS NULL OR u.activo = :activo)")
     List<Usuario> findByFiltrosPersonalizados(
-            @Param("nombre") String nombre,
+          //  @Param("nombre") String nombre,
             @Param("rolId") Long rolId,
             @Param("activo") Boolean activo
     );
 }
+// Filtro por Nombre: busca en primer/segundo nombre/apellido. Si :nombre es NULL, siempre es TRUE.
 

@@ -45,9 +45,30 @@ public class UsuarioService {
      */
     // Listar todos los usuarios
     public List<Usuario> listarUsuarios( String nombre, Long rolId, Boolean activo) {
-        // La lógica de la consulta con manejo de NULLs ya está en el Repository
-        return usuarioRepository.findByFiltrosPersonalizados(nombre,rolId,activo);
+
+        // 1. Obtener la lista filtrada de la DB (Solo por Rol y Activo)
+        // Se llama al método del repositorio con la nueva firma, SÓLO con rolId y activo.
+        List<Usuario> usuarios = usuarioRepository.findByFiltrosPersonalizados(rolId, activo);
+
+        // 2. Aplicar el filtro de nombre en Java (en memoria)
+        if (nombre != null && !nombre.trim().isEmpty()) {
+            final String nombreLower = nombre.toLowerCase().trim();
+
+            return usuarios.stream()
+                    .filter(u -> (u.getPrimerNombre() != null && u.getPrimerNombre().toLowerCase().contains(nombreLower))
+                            || (u.getSegundoNombre() != null && u.getSegundoNombre().toLowerCase().contains(nombreLower))
+                            || (u.getPrimerApellido() != null && u.getPrimerApellido().toLowerCase().contains(nombreLower))
+                            || (u.getSegundoApellido() != null && u.getSegundoApellido().toLowerCase().contains(nombreLower))
+                    )
+                    .toList();
+        }
+
+        // 3. Devolver la lista si no se filtró por nombre.
+        return usuarios;
     }
+
+
+
 
     //  Buscar usuario por ID
     public Optional<Usuario> obtenerUsuarioPorId(Long id) {

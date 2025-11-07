@@ -1,21 +1,32 @@
-package com.restaurante.PuntoSimplex.Model;
+    package com.restaurante.PuntoSimplex.Model;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
-import lombok.Data;
+    import jakarta.persistence.*;
+    import jakarta.validation.constraints.NotBlank;
+    import jakarta.validation.constraints.Size;
+    import lombok.Data;
+    import lombok.NoArgsConstructor;
 
-@Entity
-@Data
-@Table(name = "INVENTARIO")
-public class Inventario {
+    import java.time.LocalDateTime;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Entity
+    @Data
+    @NoArgsConstructor
+    @Table(name = "INVENTARIO")
+    public class Inventario {
+
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
 
 
 
-    private Integer stockActual;
-    private Integer stockMinimo;
-}
+        @OneToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "producto_id", nullable = false, unique = true)
+        private Producto producto;
+
+        private Integer stockActual;
+        private Integer stockMinimo;
+
+        @Column(nullable = false)
+        private LocalDateTime ultimaActualizacion;
+    }
